@@ -1,0 +1,37 @@
+{
+  "name": "p2p-video-call",
+  "version": "1.0.0",
+  "description": "P2P Video Call Application with WebRTC - Mobile Optimized",
+  "main": "public/script.js",
+  "scripts": {
+    "dev": "live-server public",
+    "build": "echo 'No build process needed'",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d public",
+    "server": "cd server && npm start",
+    "dev-server": "cd server && npm run dev",
+    "clean": "rm -rf node_modules"
+  },
+  "keywords": [
+    "webrtc",
+    "p2p",
+    "video-call",
+    "javascript",
+    "mobile",
+    "responsive"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/p2p-video-call"
+  },
+  "homepage": "https://yourusername.github.io/p2p-video-call",
+  "devDependencies": {
+    "gh-pages": "^5.0.0",
+    "live-server": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
