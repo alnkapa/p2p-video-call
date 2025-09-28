@@ -68,8 +68,3 @@ If you found a bug or have improvement suggestions:
 2. Create new issue with detailed description
 3. Specify browser and OS version
 
-## 📞 Support
-
-- 🐛 [Issues](https://github.com/alnkapa/p2p-video-call/issues)
-- 💬 [Discussions](https://github.com/alnkapa/p2p-video-call/discussions)
-

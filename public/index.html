@@ -1,103 +1,24 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P Видео-звонок</title>
-    <meta name="description" content="Бесплатный P2P видео-звонок с WebRTC">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📞</text></svg>">
+    <title>P2P Video Call</title>
+    <meta name="description" content="Free P2P video call application with WebRTC">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="P2P Video Call">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- No external CSS needed - all styles are in components -->
 </head>
 <body>
-    <div id="app">
-        <header class="header">
-            <h1>📞 P2P Video Call</h1>
-            <p>Безопасные peer-to-peer видео-звонки прямо в браузере</p>
-        </header>
+    <p2p-video-call></p2p-video-call>
 
-        <!-- Форма инициатора -->
-        <div id="initiator-form" class="form-container">
-            <div class="card">
-                <h2>Создать видеозвонок</h2>
-                <p>Создайте новую сессию и пригласите друга</p>
-                <button id="create-call" class="btn-primary">Создать звонок</button>
-                <div id="share-link" class="hidden">
-                    <div class="share-section">
-                        <p>Поделитесь этой ссылкой:</p>
-                        <div class="link-container">
-                            <input type="text" id="call-link" readonly>
-                            <button id="copy-link" class="btn-secondary">Копировать</button>
-                        </div>
-                        <div class="qr-code hidden" id="qr-code"></div>
-                        <button id="show-qr" class="btn-secondary">Показать QR код</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Форма ведомого -->
-        <div id="joiner-form" class="form-container hidden">
-            <div class="card">
-                <h2>Присоединиться к звонку</h2>
-                <p>Введите ID сессии или используйте ссылку</p>
-                <input type="text" id="session-id" placeholder="Введите ID сессии">
-                <button id="join-call" class="btn-primary">Присоединиться</button>
-            </div>
-        </div>
-
-        <!-- Видео окно -->
-        <div id="video-container" class="hidden">
-            <div class="video-grid">
-                <div class="video-wrapper">
-                    <video id="local-video" autoplay muted playsinline></video>
-                    <div class="video-overlay">
-                        <span>Вы</span>
-                        <div class="video-indicators">
-                            <span id="video-indicator" class="indicator video-on">📹</span>
-                            <span id="audio-indicator" class="indicator audio-on">🎤</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="video-wrapper">
-                    <video id="remote-video" autoplay playsinline></video>
-                    <div class="video-overlay">
-                        <span>Участник</span>
-                        <span id="remote-status" class="status">Подключение...</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="controls">
-                <button id="toggle-video" class="control-btn" title="Включить/выключить видео">
-                    <span class="icon">📹</span>
-                    <span class="text">Выкл видео</span>
-                </button>
-                <button id="toggle-audio" class="control-btn" title="Включить/выключить микрофон">
-                    <span class="icon">🎤</span>
-                    <span class="text">Выкл аудио</span>
-                </button>
-                <button id="switch-camera" class="control-btn" title="Сменить камеру">
-                    <span class="icon">📷</span>
-                    <span class="text">Смена камеры</span>
-                </button>
-                <button id="end-call" class="control-btn end-call" title="Завершить звонок">
-                    <span class="icon">📞</span>
-                    <span class="text">Завершить</span>
-                </button>
-            </div>
-            
-            <div id="status" class="status-message">Подключение...</div>
-        </div>
-
-        <footer class="footer">
-            <p>Использует WebRTC для P2P соединения. Исходный код на 
-                <a href="https://github.com/yourusername/p2p-video-call" target="_blank">GitHub</a>
-            </p>
-        </footer>
-    </div>
-
-    <!-- Подключаем QR код библиотеку -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

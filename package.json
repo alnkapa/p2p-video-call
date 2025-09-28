@@ -24,9 +24,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/p2p-video-call"
+    "url": "https://github.com/alnkapa/p2p-video-call"
   },
-  "homepage": "https://yourusername.github.io/p2p-video-call",
+  "homepage": "https://alnkapa.github.io/p2p-video-call",
   "devDependencies": {
     "gh-pages": "^5.0.0",
     "live-server": "^1.2.0"
