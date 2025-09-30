@@ -137,36 +137,12 @@ input[type="text"]:read-only {
     text-align: center;
 }
 
-.qr-code {
-    margin: var(--spacing-md) auto;
-    padding: var(--spacing-md);
-    background: var(--surface-primary);
-    border-radius: var(--border-radius-md);
-    display: inline-block;
-    border: 1px solid var(--border-primary);
-    box-shadow: var(--shadow-sm);
-}
-
 .button-group {
     display: flex;
     gap: var(--spacing-sm);
     justify-content: center;
     flex-wrap: wrap;
     margin-top: var(--spacing-md);
-}
-
-.success-message {
-    color: var(--color-success-500);
-    font-size: var(--font-size-sm);
-    margin-top: var(--spacing-xs);
-    font-weight: 500;
-}
-
-.error-message {
-    color: var(--color-error-500);
-    font-size: var(--font-size-sm);
-    margin-top: var(--spacing-xs);
-    font-weight: 500;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */

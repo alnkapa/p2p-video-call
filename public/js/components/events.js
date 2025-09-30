@@ -7,7 +7,6 @@ export const EVENTS = {
     TOGGLE_AUDIO: 'toggle-audio',
     SWITCH_CAMERA: 'switch-camera',
     COPY_LINK: 'copy-link',
-    SHOW_QR: 'show-qr',
     NEW_CALL: 'new-call',
     CREATE_INSTEAD: 'create-instead'
 };

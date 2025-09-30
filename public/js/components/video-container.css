@@ -176,12 +176,6 @@ video {
     border-color: rgba(239, 68, 68, 0.2);
 }
 
-.status-message.info {
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--color-primary-500);
-    border-color: rgba(59, 130, 246, 0.2);
-}
-
 .remote-status {
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius-sm);
