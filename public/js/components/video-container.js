@@ -1,4 +1,4 @@
-const css = "/js/components/video-container.css";
+const css = "js/components/video-container.css";
 import { EVENTS } from "./events.js";
 
 class VideoContainer extends HTMLElement {

@@ -1,4 +1,4 @@
-const css = "/js/components/app-header.css";
+const css = "js/components/app-header.css";
 
 class AppHeader extends HTMLElement {
   constructor() {

@@ -1,4 +1,4 @@
-const css = "/js/components/initiator-form.css";
+const css = "js/components/initiator-form.css";
 import { EVENTS } from "./events.js";
 
 class InitiatorForm extends HTMLElement {

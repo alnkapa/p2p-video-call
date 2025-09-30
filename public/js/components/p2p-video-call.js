@@ -1,4 +1,4 @@
-const css = "/js/components/p2p-video-call.css";
+const css = "js/components/p2p-video-call.css";
 import { MediaManager } from "../modules/media-manager.js";
 import { WebRTCHandler } from "../modules/webrtc-handler.js";
 import { MobileOptimizer } from "../modules/mobile-optimizer.js";

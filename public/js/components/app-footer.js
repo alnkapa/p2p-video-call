@@ -1,4 +1,4 @@
-const css = "/js/components/app-footer.css";
+const css = "js/components/app-footer.css";
 
 class AppFooter extends HTMLElement {
   constructor() {

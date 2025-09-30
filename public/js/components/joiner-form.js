@@ -1,4 +1,4 @@
-const css = "/js/components/joiner-form.css";
+const css = "js/components/joiner-form.css";
 import { EVENTS } from "./events.js";
 
 class JoinerForm extends HTMLElement {
