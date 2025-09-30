@@ -7,14 +7,13 @@ Free P2P video call application using WebRTC.
 - ✅ **Peer-to-Peer video calls** - Direct connection between participants
 - ✅ **No installation required** - Works directly in the browser
 - ✅ **Camera switching** - Switch between front and rear cameras
-- ✅ **QR code connection** - Quick join via QR code
 
 ## 🚀 Quick Start
 
 ### For users:
 1. Open [the app on GitHub Pages](https://alnkapa.github.io/p2p-video-call)
 2. Click "Create Call"
-3. Share the link or QR code with a friend
+3. Share the link code with a friend
 4. Start communicating!
 
 ## 🖥️ Browser Support
