@@ -2,12 +2,12 @@ const css = "/js/components/p2p-video-call.css";
 // import { MediaManager } from "../modules/media-manager.js";
 // import { WebRTCHandler } from "../modules/webrtc-handler.js";
 // import { MobileOptimizer } from "../modules/mobile-optimizer.js";
-import { generateSessionId } from "../modules/utils.js";
+import { generateSessionId, callUrl } from "../modules/utils.js";
 import { EVENTS } from "./events.js";
 import "./app-header.js";
 import "./initiator-form.js";
-import './joiner-form.js';
-import './video-container.js';
+import "./joiner-form.js";
+import "./video-container.js";
 import "./app-footer.js";
 
 class P2PVideoCall extends HTMLElement {
@@ -58,9 +58,9 @@ class P2PVideoCall extends HTMLElement {
     <style>${this.cssContent}</style>
     <div class="app-container">
       <app-header></app-header>
-      <initiator-form></initiator-form>
-      <joiner-form></joiner-form>
       <video-container></video-container>
+      <joiner-form></joiner-form>
+      <initiator-form></initiator-form>      
       <app-footer></app-footer>
     </div>`;
   }
@@ -69,21 +69,23 @@ class P2PVideoCall extends HTMLElement {
     this.shadowRoot.addEventListener(EVENTS.CREATE_CALL, () =>
       this.createCall()
     );
+
+    this.shadowRoot.addEventListener(EVENTS.NEW_CALL, () =>
+      this.showInitiatorForm()
+    );
+
     // this.shadowRoot.addEventListener("join-call", (e) =>
     //   this.joinCall(e.detail.sessionId)
     // );
+
     // this.shadowRoot.addEventListener("end-call", () => this.endCall());
     // this.shadowRoot.addEventListener("toggle-video", () => this.toggleVideo());
     // this.shadowRoot.addEventListener("toggle-audio", () => this.toggleAudio());
     // this.shadowRoot.addEventListener("switch-camera", () =>
     //   this.switchCamera()
     // );
-    // this.shadowRoot.addEventListener("copy-link", () => this.copyLink());
-    // this.shadowRoot.addEventListener("show-qr", () => this.toggleQrCode());
+
     // this.shadowRoot.addEventListener("create-instead", () =>
-    //   this.showInitiatorForm()
-    // );
-    // this.shadowRoot.addEventListener("new-call", () =>
     //   this.showInitiatorForm()
     // );
 
@@ -129,7 +131,7 @@ class P2PVideoCall extends HTMLElement {
   async createCall() {
     try {
       // Добавляем тестовый таймаут для демонстрации
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
       // this.updateStatus(
       //   "Getting camera and microphone access...",
       //   false,
@@ -140,9 +142,7 @@ class P2PVideoCall extends HTMLElement {
 
       this.isCaller = true;
       this.sessionId = generateSessionId();
-
-      const callUrl = `${window.location.origin}${window.location.pathname}?session=${this.sessionId}`;
-      this.showShareLink(callUrl);
+      this.showShareLink(callUrl(this.sessionId));
 
       // this.updateStatus(
       //   "Establishing secure P2P connection...",
@@ -301,35 +301,9 @@ class P2PVideoCall extends HTMLElement {
   //     window.history.replaceState({}, "", url);
   //   }
 
-  //   copyLink() {
-  //     const callLink = this.shadowRoot.querySelector("#call-link");
-  //     if (callLink) {
-  //       callLink.select();
-  //       document.execCommand("copy");
-
-  //       // Show success feedback
-  //       const copyBtn = this.shadowRoot.querySelector("#copy-link");
-  //       if (copyBtn) {
-  //         const originalText = copyBtn.textContent;
-  //         copyBtn.textContent = "Copied!";
-  //         copyBtn.style.background = "var(--success-color, #10b981)";
-
-  //         setTimeout(() => {
-  //           copyBtn.textContent = originalText;
-  //           copyBtn.style.background = "";
-  //         }, 2000);
-  //       }
-  //     }
-  //   }
-
-  //   showInitiatorForm() {
-  //     this.hideAll();
-  //     const initiatorForm = this.shadowRoot.querySelector("initiator-form");
-  //     if (initiatorForm) {
-  //       initiatorForm.classList.remove("hidden");
-  //       initiatorForm.classList.add("fade-in");
-  //     }
-  //   }
+  showInitiatorForm() {
+    this.hideAll();    
+  }
 
   //   showJoinerForm() {
   //     this.hideAll();
@@ -342,10 +316,7 @@ class P2PVideoCall extends HTMLElement {
   //   }
 
   showVideoContainer() {
-    console.log("showVideoContainer called");
-    //this.hideAll();
     const videoContainer = this.shadowRoot.querySelector("video-container");
-    console.log("showVideoContainer called");
     if (videoContainer) {
       if (videoContainer.show) {
         videoContainer.show();
@@ -353,19 +324,16 @@ class P2PVideoCall extends HTMLElement {
     }
   }
 
-  //   hideAll() {
-  //     const components = this.shadowRoot.querySelectorAll(
-  //       "initiator-form, joiner-form, video-container"
-  //     );
-  //     components.forEach((comp) => {
-  //       comp.classList.add("hidden");
-  //       comp.classList.remove("fade-in");
-  //       // Также вызываем метод hide если он существует
-  //       if (comp.hide && typeof comp.hide === "function") {
-  //         comp.hide();
-  //       }
-  //     });
-  //   }
+  hideAll() {
+    const components = this.shadowRoot.querySelectorAll(
+      "initiator-form, joiner-form, video-container"
+    );
+    components.forEach((comp) => {
+      if (comp.hide && typeof comp.hide === "function") {
+        comp.hide();
+      }
+    });
+  }
 
   showShareLink(url) {
     const initiatorForm = this.shadowRoot.querySelector("initiator-form");

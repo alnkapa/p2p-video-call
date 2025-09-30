@@ -18,7 +18,7 @@ class JoinerForm extends HTMLElement {
 
     async connectedCallback() {
         await this.render();
-        this.setupEventListeners();
+        // this.setupEventListeners();
     }
 
     async render() {
@@ -64,126 +64,126 @@ class JoinerForm extends HTMLElement {
         </div>`;
     }
 
-    setupEventListeners() {
-        this.shadowRoot.addEventListener('click', (event) => {
-            if (event.target.matches('#join-call')) {
-                this.handleJoinCall();
-            } else if (event.target.matches('#create-instead')) {
-                this.dispatchEvent(new CustomEvent('create-instead', { 
-                    bubbles: true,
-                    composed: true
-                }));
-            }
-        });
+    // setupEventListeners() {
+    //     this.shadowRoot.addEventListener('click', (event) => {
+    //         if (event.target.matches('#join-call')) {
+    //             this.handleJoinCall();
+    //         } else if (event.target.matches('#create-instead')) {
+    //             this.dispatchEvent(new CustomEvent('create-instead', { 
+    //                 bubbles: true,
+    //                 composed: true
+    //             }));
+    //         }
+    //     });
 
-        const sessionIdInput = this.shadowRoot.querySelector('#session-id');
-        if (sessionIdInput) {
-            sessionIdInput.addEventListener('input', () => {
-                this.clearError();
-            });
+    //     const sessionIdInput = this.shadowRoot.querySelector('#session-id');
+    //     if (sessionIdInput) {
+    //         sessionIdInput.addEventListener('input', () => {
+    //             this.clearError();
+    //         });
 
-            sessionIdInput.addEventListener('paste', (event) => {
-                setTimeout(() => {
-                    this.extractSessionIdFromInput();
-                }, 0);
-            });
-        }
-    }
+    //         sessionIdInput.addEventListener('paste', (event) => {
+    //             setTimeout(() => {
+    //                 this.extractSessionIdFromInput();
+    //             }, 0);
+    //         });
+    //     }
+    // }
 
-    handleJoinCall() {
-        const sessionIdInput = this.shadowRoot.querySelector('#session-id');
-        const sessionId = sessionIdInput ? sessionIdInput.value.trim() : '';
+    // handleJoinCall() {
+    //     const sessionIdInput = this.shadowRoot.querySelector('#session-id');
+    //     const sessionId = sessionIdInput ? sessionIdInput.value.trim() : '';
         
-        if (!sessionId) {
-            this.showError('Please enter a session ID or invitation link');
-            return;
-        }
+    //     if (!sessionId) {
+    //         this.showError('Please enter a session ID or invitation link');
+    //         return;
+    //     }
 
-        const extractedSessionId = this.extractSessionId(sessionId);
+    //     const extractedSessionId = this.extractSessionId(sessionId);
         
-        this.dispatchEvent(new CustomEvent('join-call', { 
-            bubbles: true,
-            composed: true,
-            detail: { sessionId: extractedSessionId }
-        }));
-    }
+    //     this.dispatchEvent(new CustomEvent('join-call', { 
+    //         bubbles: true,
+    //         composed: true,
+    //         detail: { sessionId: extractedSessionId }
+    //     }));
+    // }
 
-    extractSessionId(input) {
-        if (input.includes('?')) {
-            const url = new URL(input);
-            return url.searchParams.get('session') || input;
-        }
-        return input;
-    }
+    // extractSessionId(input) {
+    //     if (input.includes('?')) {
+    //         const url = new URL(input);
+    //         return url.searchParams.get('session') || input;
+    //     }
+    //     return input;
+    // }
 
-    extractSessionIdFromInput() {
-        const sessionIdInput = this.shadowRoot.querySelector('#session-id');
-        if (sessionIdInput) {
-            const extracted = this.extractSessionId(sessionIdInput.value);
-            sessionIdInput.value = extracted;
-        }
-    }
+    // extractSessionIdFromInput() {
+    //     const sessionIdInput = this.shadowRoot.querySelector('#session-id');
+    //     if (sessionIdInput) {
+    //         const extracted = this.extractSessionId(sessionIdInput.value);
+    //         sessionIdInput.value = extracted;
+    //     }
+    // }
 
-    showError(message) {
-        const errorElement = this.shadowRoot.getElementById('error-message');
-        const inputElement = this.shadowRoot.querySelector('#session-id');
+    // showError(message) {
+    //     const errorElement = this.shadowRoot.getElementById('error-message');
+    //     const inputElement = this.shadowRoot.querySelector('#session-id');
         
-        if (errorElement && inputElement) {
-            errorElement.textContent = message;
-            errorElement.classList.add('visible');
-            inputElement.classList.add('input-error');
-        }
-    }
+    //     if (errorElement && inputElement) {
+    //         errorElement.textContent = message;
+    //         errorElement.classList.add('visible');
+    //         inputElement.classList.add('input-error');
+    //     }
+    // }
 
-    clearError() {
-        const errorElement = this.shadowRoot.getElementById('error-message');
-        const inputElement = this.shadowRoot.querySelector('#session-id');
+    // clearError() {
+    //     const errorElement = this.shadowRoot.getElementById('error-message');
+    //     const inputElement = this.shadowRoot.querySelector('#session-id');
         
-        if (errorElement && inputElement) {
-            errorElement.classList.remove('visible');
-            inputElement.classList.remove('input-error');
-        }
-    }
+    //     if (errorElement && inputElement) {
+    //         errorElement.classList.remove('visible');
+    //         inputElement.classList.remove('input-error');
+    //     }
+    // }
 
-    show() {
-        this.isVisible = true;
-        const container = this.shadowRoot.querySelector('.joiner-form');
-        if (container) {
-            container.classList.remove('hidden');
-            container.classList.add('fade-in');
-        }
-    }
+    // show() {
+    //     this.isVisible = true;
+    //     const container = this.shadowRoot.querySelector('.joiner-form');
+    //     if (container) {
+    //         container.classList.remove('hidden');
+    //         container.classList.add('fade-in');
+    //     }
+    // }
 
-    hide() {
-        this.isVisible = false;
-        const container = this.shadowRoot.querySelector('.joiner-form');
-        if (container) {
-            container.classList.add('hidden');
-            container.classList.remove('fade-in');
-        }
-    }
+    // hide() {
+    //     this.isVisible = false;
+    //     const container = this.shadowRoot.querySelector('.joiner-form');
+    //     if (container) {
+    //         container.classList.add('hidden');
+    //         container.classList.remove('fade-in');
+    //     }
+    // }
 
-    isVisible() {
-        return this.isVisible;
-    }
+    // isVisible() {
+    //     return this.isVisible;
+    // }
     
-    clear() {
-        const input = this.shadowRoot.querySelector('#session-id');
-        if (input) {
-            input.value = '';
-        }
-        this.clearError();
-    }
+    // clear() {
+    //     const input = this.shadowRoot.querySelector('#session-id');
+    //     if (input) {
+    //         input.value = '';
+    //     }
+    //     this.clearError();
+    // }
 
-    setLoading(loading) {
-        const button = this.shadowRoot.querySelector('#join-call');
-        if (button) {
-            button.disabled = loading;
-            button.innerHTML = loading ? 
-                '<span>Connecting...</span>' : 
-                '<span>Join Video Call</span>';
-        }
-    }
+    // setLoading(loading) {
+    //     const button = this.shadowRoot.querySelector('#join-call');
+    //     if (button) {
+    //         button.disabled = loading;
+    //         button.innerHTML = loading ? 
+    //             '<span>Connecting...</span>' : 
+    //             '<span>Join Video Call</span>';
+    //     }
+    // }
 }
 
 customElements.define('joiner-form', JoinerForm);

@@ -54,33 +54,46 @@ class InitiatorForm extends HTMLElement {
   async setupEventListeners() {
     const createCallButton = this.shadowRoot.getElementById("create-call");
     createCallButton.disabled = false;
-    createCallButton.addEventListener("click", (event) => {
+    createCallButton.addEventListener("click", () => {
       createCallButton.disabled = true;
       this.dispatchEvent(
-        new CustomEvent(EVENTS.CREATE_CALL, { bubbles: true, composed: true })
+        new CustomEvent(EVENTS.CREATE_CALL, {
+          bubbles: true,
+          composed: true,
+        })
       );
     });
-    // this.shadowRoot.addEventListener("click", (event) => {
-    //   console.log("event", event.target);
-    //   if (event.target.matches("#create-call")) {
-    //     this.dispatchEvent(
-    //       new CustomEvent(EVENTS.CREATE_CALL, { bubbles: true, composed: true })
-    //     );
-    //     this.shadowRoot.getElementById("create-call").disabled = true;
-    //   } else if (event.target.matches("#copy-link")) {
-    //     this.dispatchEvent(
-    //       new CustomEvent("copy-link", { bubbles: true, composed: true })
-    //     );
-    //   } else if (event.target.matches("#show-qr")) {
-    //     this.dispatchEvent(
-    //       new CustomEvent("show-qr", { bubbles: true, composed: true })
-    //     );
-    //   } else if (event.target.matches("#new-call")) {
-    //     this.dispatchEvent(
-    //       new CustomEvent("new-call", { bubbles: true, composed: true })
-    //     );
-    //   }
-    // });
+    const copyLinkButton = this.shadowRoot.getElementById("copy-link");
+    copyLinkButton.addEventListener("click", () => this.copyLink());
+    const newCallButton = this.shadowRoot.getElementById("new-call");
+    newCallButton.addEventListener("click", () => {
+      newCallButton.disabled = true;
+      this.dispatchEvent(
+        new CustomEvent(EVENTS.NEW_CALL, {
+          bubbles: true,
+          composed: true,
+        })
+      );
+    });
+  }
+  copyLink() {
+    const callLink = this.shadowRoot.getElementById("call-link");
+    if (callLink) {
+      callLink.select();
+      document.execCommand("copy");
+      // Show success feedback
+      const copyLinkButton = this.shadowRoot.getElementById("copy-link");
+      if (copyLinkButton) {
+        const originalText = copyLinkButton.textContent;
+        copyLinkButton.textContent = "Copied!";
+        copyLinkButton.style.background = "var(--success-color, #10b981)";
+
+        setTimeout(() => {
+          copyLinkButton.textContent = originalText;
+          copyLinkButton.style.background = "";
+        }, 2000);
+      }
+    }
   }
 
   // Public methods for parent component
