@@ -3,23 +3,25 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # pull_request обычно убираем для деплоя
+  # оставляем только если нужна проверка билда в PR
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # Добавляем условие для исключения PR из триггеров деплоя
+    if: github.event_name != 'pull_request'
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # Обновляем до v4
 
     - name: Setup Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4  # Обновляем до v4
       with:
-        node-version: '18'
+        node-version: '20'  # Рекомендуемая LTS версия
         cache: 'npm'
 
     - name: Install dependencies
@@ -34,3 +36,6 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./public
         force_orphan: true
+        # Можно добавить для чистоты
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
