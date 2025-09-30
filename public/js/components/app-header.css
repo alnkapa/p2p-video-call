@@ -1,0 +1,79 @@
+/* ===== VIDEO CALL HEADER COMPONENT STYLES ===== */
+.header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    font-family: var(--font-family-primary);
+}
+
+.header h1 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-sm);
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: var(--font-family-primary);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.header p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-lg);
+    font-family: var(--font-family-primary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.mobile-indicator::after {
+    content: "📱";
+    margin-left: var(--spacing-sm);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .header {
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .header h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .header p {
+        font-size: var(--font-size-base);
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .header p {
+        font-size: var(--font-size-sm);
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-indicator::after {
+        content: "💻";
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    .header h1 {
+        background: var(--color-primary-500);
+        -webkit-text-fill-color: initial;
+        background-clip: initial;
+    }
+}
+
+@media (prefers-contrast: high) {
+    .header h1 {
+        background: none;
+        -webkit-text-fill-color: initial;
+        color: var(--color-gray-900);
+    }
+}
