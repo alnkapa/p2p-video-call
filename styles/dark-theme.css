@@ -1,0 +1,41 @@
+/* ===== ТЕМНАЯ ТЕМА ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Цветовые токены (инвертированные) */
+    --color-white: #111827;
+    --color-gray-50: #1f2937;
+    --color-gray-100: #374151;
+    --color-gray-200: #4b5563;
+    --color-gray-300: #6b7280;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #d1d5db;
+    --color-gray-600: #e5e7eb;
+    --color-gray-700: #f3f4f6;
+    --color-gray-800: #f9fafb;
+    --color-gray-900: #ffffff;
+
+    --color-primary-500: #7c93f5;
+    --color-primary-600: #667eea;    
+
+    /* Системные цвета */
+    --surface-primary: var(--color-gray-50);
+    --surface-secondary: var(--color-gray-100);
+    --surface-tertiary: var(--color-gray-200);
+
+    /* Границы */
+    --border-primary: var(--color-gray-200);
+    --border-secondary: var(--color-gray-300);
+    --border-print: var(--color-gray-400);
+
+    /* Тени (более мягкие в темной теме) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
+      0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
+      0 10px 10px -5px rgba(0, 0, 0, 0.1);
+
+    /* Остальные токены наследуются из светлой темы */
+  }
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P2P Video Call</title>
+    <meta
+      name="description"
+      content="Free P2P video call application with WebRTC"
+    />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="P2P Video Call" />
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+    <link rel="manifest" href="manifest.json" />
+    <!-- Светлая тема (базовая) -->
+    <link rel="stylesheet" href="/styles/light-theme.css" />
+    <!-- Темная тема (автоматически активируется через media query) -->
+    <link rel="stylesheet" href="/styles/dark-theme.css" />
+    <!-- No external CSS needed - all styles are in components -->
+  </head>
+  <body>
+    <p2p-video-call></p2p-video-call>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
