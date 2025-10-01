@@ -5,6 +5,8 @@
     <div class="container">
       <h3>Боб: Принимающий соединение</h3>
 
+      <div id="status">Статус: Ожидание SDP оффера...</div>
+
       <!-- Добавлен контейнер для видео -->
       <div id="videoContainer" style="display: none">
         <h4>Локальное видео (Ваша камера):</h4>
@@ -39,7 +41,7 @@
         📋 Копировать SDP answer
       </button>
 
-      <div id="status">Статус: Ожидание SDP оффера...</div>
+      
       <div id="connectionStatus"></div>
     </div>
 
@@ -277,7 +279,7 @@
           document.getElementById("copyAnswerBtn").disabled = false;
           document.getElementById("connectionStatus").innerHTML +=
             "<p>📤 SDP answer готов! Скопируйте и отправьте Алисе через Telegram</p>";
-
+          document.getElementById("status").textContent = "📤 SDP answer готов! Скопируйте и отправьте Алисе через Telegram";
           console.log("✅ SDP answer создан и готов к отправке");
         } catch (err) {
           console.error("Ошибка применения SDP оффера:", err);
