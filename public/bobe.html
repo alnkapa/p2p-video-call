@@ -196,8 +196,9 @@
           console.log("✅ Локальная камера активирована");
         } catch (err) {
           console.log("⚠️ Микрофон/камера не доступны: ", err);
+          document.getElementById("status").textContent = "⚠️ Не удалось получить доступ к камере/микрофону";
           document.getElementById("connectionStatus").innerHTML +=
-            "<p>⚠️ Не удалось получить доступ к камере/микрофону</p>";
+            "⚠️ Не удалось получить доступ к камере/микрофону<br\>";
         }
 
         // Ждем ВСЕ кандидаты
@@ -235,8 +236,7 @@
             const incomingStream = new MediaStream();
             incomingStream.addTrack(event.track);
             remoteVideo.srcObject = incomingStream;
-          }
-
+          }          
           document.getElementById("connectionStatus").innerHTML +=
             "<p>✅ Получен видео поток от Алисы</p>";
         };
@@ -247,12 +247,15 @@
           console.log("ICE соединение:", state);
           const statusElem = document.getElementById("connectionStatus");
 
-          if (state === "connected" || state === "completed") {
+          if (state === "connected" || state === "completed") {            
             statusElem.innerHTML += "<p>✅ Соединение установлено!</p>";
+            document.getElementById("status").textContent = "✅ Соединение установлено!";
           } else if (state === "failed") {
             statusElem.innerHTML += "<p>❌ Соединение не удалось</p>";
-          } else if (state === "disconnected") {
+            document.getElementById("status").textContent = "❌ Соединение не удалось";
+          } else if (state === "disconnected") {            
             statusElem.innerHTML += "<p>⚠️ Соединение прервано</p>";
+            document.getElementById("status").textContent = "⚠️ Соединение прервано";
           }
         };
 
