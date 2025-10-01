@@ -8,12 +8,35 @@
 
       <div id="status">Статус: Ожидание...</div>
 
+      <!-- Добавлены видео элементы -->
+      <div style="display: flex; gap: 20px; margin: 20px 0">
+        <div>
+          <h4>Ваше видео:</h4>
+          <video
+            id="localVideo"
+            autoplay
+            muted
+            playsinline
+            style="width: 300px; height: 225px; background: #000"
+          ></video>
+        </div>
+        <div>
+          <h4>Видео собеседника:</h4>
+          <video
+            id="remoteVideo"
+            autoplay
+            playsinline
+            style="width: 300px; height: 225px; background: #000"
+          ></video>
+        </div>
+      </div>
+
       <textarea
         id="sdpOffer"
         readonly
         placeholder="SDP оффер появится здесь..."
       ></textarea>
-      <button onclick="copyOffer()" id="copyBtn" disabled>
+      <button onclick="copyCompressedOffer()" id="copyBtn" disabled>
         📋 Копировать SDP оффер
       </button>
 
@@ -21,16 +44,118 @@
         id="sdpAnswer"
         placeholder="Вставьте сюда SDP answer от Боба..."
       ></textarea>
-      <button onclick="pasteAnswer()">✅ Применить SDP answer</button>
+      <button onclick="pasteCompressedAnswer()">✅ Применить SDP answer</button>
 
       <div id="connectionStatus"></div>
     </div>
 
     <script>
+      class SDPCompressor {
+        // Сериализация и сжатие SDP
+        static async compressSDP(sdpData) {
+          try {
+            // Пробуем современное API сжатия
+            if (window.CompressionStream) {
+              const encoded = new TextEncoder().encode(sdpData);
+
+              // Создаем ReadableStream из Uint8Array
+              const readableStream = new ReadableStream({
+                start(controller) {
+                  controller.enqueue(encoded);
+                  controller.close();
+                },
+              });
+
+              const cs = new CompressionStream("deflate");
+              const compressedStream = readableStream.pipeThrough(cs);
+
+              const chunks = [];
+              const reader = compressedStream.getReader();
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+              }
+
+              const compressedBlob = new Blob(chunks);
+              const base64 = await this.blobToBase64(compressedBlob);
+              return `compressed:${base64}`;
+            }
+          } catch (err) {
+            console.warn("CompressionStream не поддерживается:", err);
+          }
+
+          // Fallback: просто Base64
+          const base64 = btoa(unescape(encodeURIComponent(sdpData)));
+          return `base64:${base64}`;
+        }
+
+        // Распаковка и десериализация
+        static async decompressSDP(compressedData) {
+          if (compressedData.startsWith("compressed:")) {
+            try {
+              const base64 = compressedData.slice(11);
+              const blob = await this.base64ToBlob(base64);
+
+              const ds = new DecompressionStream("deflate");
+              const decompressedStream = blob.stream().pipeThrough(ds);
+
+              const chunks = [];
+              const reader = decompressedStream.getReader();
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+              }
+
+              const array = new Uint8Array(
+                await new Blob(chunks).arrayBuffer()
+              );
+              return new TextDecoder().decode(array);
+            } catch (err) {
+              console.warn("Ошибка распаковки:", err);
+            }
+          }
+
+          // Fallback: Base64
+          if (compressedData.startsWith("base64:")) {
+            const base64 = compressedData.slice(7);
+            return decodeURIComponent(escape(atob(base64)));
+          }
+
+          // Если не сжато, возвращаем как есть
+          return compressedData;
+        }
+
+        // Вспомогательные методы
+        static blobToBase64(blob) {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result.split(",")[1]);
+            reader.readAsDataURL(blob);
+          });
+        }
+
+        static base64ToBlob(base64) {
+          const binary = atob(base64);
+          const array = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            array[i] = binary.charCodeAt(i);
+          }
+          return new Blob([array]);
+        }
+      }
 
       let peerConnection;
+      let localStream;
       let localCandidates = [];
-      let iceGatheringTimeout;
+      let resolveFunction;
+      let rejectFunction;
+
+      const promise = new Promise((resolve, reject) => {
+        resolveFunction = resolve;
+        rejectFunction = reject;
+      });
 
       async function startConnection() {
         console.log("🟢 Начинаем установку соединения...");
@@ -49,33 +174,30 @@
           peerConnection = new RTCPeerConnection(config);
           console.log("✅ RTCPeerConnection создан");
 
-          // Создаем управляемый Promise
-          let resolveFunction;
-          let rejectFunction;
-
-          const promise = new Promise((resolve, reject) => {
-            resolveFunction = resolve;
-            rejectFunction = reject;
-          });
-          await setupConnectionHandlers(resolveFunction, rejectFunction);
-
-          // Собираем медиа-поток (если нужен)
           try {
-            const stream = await navigator.mediaDevices.getUserMedia({
+            localStream = await navigator.mediaDevices.getUserMedia({
               video: true,
               audio: true,
             });
-            stream.getTracks().forEach((track) => {
-              peerConnection.addTrack(track, stream);
+
+            const localVideo = document.getElementById("localVideo");
+            localVideo.srcObject = localStream;
+
+            localStream.getTracks().forEach((track) => {
+              peerConnection.addTrack(track, localStream);
             });
+            console.log("✅ Медиа-поток получен и добавлен в соединение");
           } catch (err) {
             console.log("⚠️ Микрофон/камера не доступны: ", err);
+            document.getElementById("status").textContent =
+              "⚠️ Камера/микрофон не доступны, но соединение будет установлено";
           }
-          // Создаем оффер сразу после добавления треков
+
+          // Настраиваем обработчики
+          await setupConnectionHandlers(resolveFunction);
+
+          // Создаем оффер
           await createAndDisplayOffer();
-          await promise;
-          console.log("end");
-          displayCurrentOffer();
         } catch (err) {
           console.error("❌ Ошибка при старте соединения:", err);
           document.getElementById("status").textContent =
@@ -83,7 +205,7 @@
         }
       }
 
-      async function setupConnectionHandlers(resolveFunction, rejectFunction) {        
+      async function setupConnectionHandlers(resolveFunction) {
         // Обработчик ICE кандидатов
         peerConnection.onicecandidate = (event) => {
           console.log("🟡 onicecandidate вызван:", event.candidate);
@@ -92,7 +214,6 @@
             document.getElementById(
               "status"
             ).textContent = `🕐 Собираем сетевые адреса... (${localCandidates.length} кандидатов)`;
-
             console.log("Кандидат:", event.candidate.toJSON());
           } else {
             console.log("✅ Все ICE кандидаты собраны");
@@ -104,19 +225,25 @@
         };
 
         peerConnection.onicecandidateerror = (event) => {
-          rejectFunction(event.message);
+          console.error("❌ Ошибка ICE кандидата:", event);
         };
-        
+
         // Обработчик входящего медиа-потока
         peerConnection.ontrack = (event) => {
           console.log("✅ Входящий медиа-поток получен:", event);
-          const remoteVideo = document.createElement("video");
-          remoteVideo.srcObject = event.streams[0];
-          remoteVideo.autoplay = true;
-          remoteVideo.controls = true;
-          remoteVideo.style.width = "100%";
-          remoteVideo.style.maxWidth = "400px";
-          document.getElementById("connectionStatus").appendChild(remoteVideo);
+          const remoteVideo = document.getElementById("remoteVideo");
+
+          if (event.streams && event.streams[0]) {
+            remoteVideo.srcObject = event.streams[0];
+          } else {
+            // Создаем новый поток если его нет
+            const newStream = new MediaStream();
+            newStream.addTrack(event.track);
+            remoteVideo.srcObject = newStream;
+          }
+
+          document.getElementById("connectionStatus").innerHTML +=
+            "<p>✅ Видео от собеседника получено!</p>";
         };
 
         // Обработчик состояния соединения
@@ -129,18 +256,30 @@
             statusElem.innerHTML += "<p>✅ Соединение установлено!</p>";
           } else if (state === "failed") {
             statusElem.innerHTML += "<p>❌ Соединение не удалось</p>";
+          } else if (state === "disconnected") {
+            statusElem.innerHTML += "<p>⚠️ Соединение прервано</p>";
           }
         };
 
+        // Обработчик состояния подписки
+        peerConnection.onsignalingstatechange = () => {
+          console.log("Signaling state:", peerConnection.signalingState);
+        };
       }
 
       async function createAndDisplayOffer() {
         try {
           console.log("🟡 Создаем оффер...");
-          const offer = await peerConnection.createOffer();
-          console.log("✅ Оффер создан");
-          await peerConnection.setLocalDescription(offer);
-          console.log("✅ Local description установлен");          
+
+          // Убедимся, что у нас есть локальное описание
+          if (!peerConnection.currentLocalDescription) {
+            const offer = await peerConnection.createOffer();
+            console.log("✅ Оффер создан");
+            await peerConnection.setLocalDescription(offer);
+            console.log("✅ Local description установлен");
+          }
+          await promise;
+          displayCurrentOffer();
         } catch (err) {
           console.error("❌ Ошибка при создании оффера:", err);
           document.getElementById("status").textContent =
@@ -161,31 +300,35 @@
         console.log("✅ SDP оффер отображен");
       }
 
-      async function copyOffer() {
-        const offerText = document.getElementById("sdpOffer").value;
+      async function copyCompressedOffer() {
         try {
-          await navigator.clipboard.writeText(offerText);
-          alert("SDP оффер скопирован! Отправьте его Бобу в Telegram.");
+          const originalSDP = document.getElementById("sdpOffer").value;
+          const compressed = await SDPCompressor.compressSDP(originalSDP);
+          await navigator.clipboard.writeText(compressed);
+          alert("SDP оффер скопирован в буфер обмена!");
         } catch (err) {
-          const offerTextarea = document.getElementById("sdpOffer");
-          offerTextarea.select();
-          document.execCommand("copy");
-          alert("SDP оффер скопирован! Отправьте его Бобу в Telegram.");
+          console.error("Ошибка копирования:", err);
+          alert("Ошибка копирования: " + err.message);
         }
       }
 
-      async function pasteAnswer() {
-        const answerSdp = document.getElementById("sdpAnswer").value;
-        if (!answerSdp) {
+      async function pasteCompressedAnswer() {
+        const compressedSdrAnswer = document.getElementById("sdpAnswer").value;
+        if (!compressedSdrAnswer) {
           alert("Вставьте SDP answer от Боба");
           return;
         }
 
         try {
+          const answerSdp = await SDPCompressor.decompressSDP(
+            compressedSdrAnswer
+          );
+
           await peerConnection.setRemoteDescription({
             type: "answer",
             sdp: answerSdp,
           });
+
           document.getElementById("connectionStatus").innerHTML +=
             "<p>✅ SDP answer применен! Соединение устанавливается...</p>";
           console.log("✅ Remote description установлен");
