@@ -254,9 +254,11 @@
           } else if (state === "failed") {
             statusElem.innerHTML += "<p>❌ Соединение не удалось</p>";
             document.getElementById("status").textContent = "❌ Соединение не удалось";
+            rejectFunction("❌ Соединение не удалось");
           } else if (state === "disconnected") {            
             statusElem.innerHTML += "<p>⚠️ Соединение прервано</p>";
             document.getElementById("status").textContent = "⚠️ Соединение прервано";
+            rejectFunction("⚠️ Соединение прервано");
           }
         };
 
@@ -277,7 +279,8 @@
           await peerConnection.setLocalDescription(answer);
 
           // Ждем завершения сбора ICE кандидатов
-          await promise;
+          const rez = await promise;
+          
 
           document.getElementById("sdpAnswer").value = answer.sdp;
           document.getElementById("copyAnswerBtn").disabled = false;
