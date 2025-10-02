@@ -1,6 +1,6 @@
 # P2P Video Call 📞
 
-Free P2P video call application using WebRTC.
+<!-- Free P2P video call application using WebRTC.
 
 ## 🌟 Features
 
@@ -66,4 +66,4 @@ If you found a bug or have improvement suggestions:
 1. Check [existing issues](https://github.com/alnkapa/p2p-video-call/issues)
 2. Create new issue with detailed description
 3. Specify browser and OS version
-
+ -->
